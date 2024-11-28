@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workspace Configuration</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Card Styles */
+        .card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .card-header {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        .card-body {
+            margin-top: 20px;
+        }
+
+        .card-footer {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Form Elements */
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus, select:focus {
+            border-color: #007bff;
+        }
+
+        .button {
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .button-primary {
+            background-color: #007bff;
+            color: white;
+            border: none;
+        }
+
+        .button-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .button-secondary {
+            background-color: #f1f1f1;
+            color: #333;
+            border: 1px solid #ccc;
+        }
+
+        .button-secondary:hover {
+            background-color: #e0e0e0;
+        }
+
+        .button-danger {
+            background-color: #e57373;
+            color: white;
+            border: none;
+        }
+
+        .button-danger:hover {
+            background-color: #d32f2f;
+        }
+
+        /* Area & Product Containers */
+        .area-container {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+        }
+
+        .area-name {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            width: 100%;
+            border: 1px solid #ccc;
+        }
+
+        .products-container {
+            margin-top: 15px;
+        }
+
+        .product-container {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+        }
+
+        .sub-product-container {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            margin-left: 30px;
+        }
+
+        /* Button Container */
+        .button-group {
+            display: flex;
+            justify-content: flex-start;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <form id="workspaceForm">
+        <div class="card">
+            <div class="card-header">
+                Workspace Configuration
+            </div>
+            <div class="card-body">
+                <label for="workspace-name">Workspace Name</label>
+                <input type="text" id="workspace-name" required>
+                <div id="areas-container"></div>
+            </div>
+            <div class="card-footer">
+                <button type="button" class="button button-secondary" onclick="addArea()">
+                    Add Area
+                </button>
+                <button type="submit" class="button button-primary">Submit</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Prevent form submission
+    document.getElementById('workspaceForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const workspaceName = document.getElementById('workspace-name').value;
+        const areas = collectAreasData();
+        console.log('Workspace:', workspaceName);
+        console.log('Areas:', areas);
+    });
+
+    function collectAreasData() {
+        const areas = [];
+        document.querySelectorAll('.area-container').forEach(areaDiv => {
+            const area = {
+                id: areaDiv.id,
+                name: areaDiv.querySelector('.area-name').value,
+                products: collectProductsData(areaDiv, "")
+            };
+            areas.push(area);
+        });
+        return areas;
+    }
+
+    function collectProductsData(parentDiv, prefix) {
+        const products = [];
+        parentDiv.querySelectorAll('.product-container').forEach((productDiv, index) => {
+            const number = prefix + (index + 1);
+            const product = {
+                id: productDiv.id,
+                name: productDiv.querySelector('.product-name').value,
+                platform: productDiv.querySelector('.platform-select').value,
+                customPlatform: productDiv.querySelector('.custom-platform').value,
+                location: productDiv.querySelector('.location-select').value,
+                customLocation: productDiv.querySelector('.custom-location').value,
+                subProducts: collectSubProductsData(productDiv, number + ".")
+            };
+            products.push(product);
+        });
+        return products;
+    }
+
+    function collectSubProductsData(productDiv, prefix) {
+        const subProducts = [];
+        productDiv.querySelectorAll('.sub-product-container').forEach((subProductDiv, index) => {
+            const number = prefix + (index + 1);
+            const subProduct = {
+                id: subProductDiv.id,
+                name: subProductDiv.querySelector('.sub-product-name').value,
+                platform: subProductDiv.querySelector('.platform-select').value,
+                customPlatform: subProductDiv.querySelector('.custom-platform').value,
+                location: subProductDiv.querySelector('.location-select').value,
+                customLocation: subProductDiv.querySelector('.custom-location').value
+            };
+            subProducts.push(subProduct);
+        });
+        return subProducts;
+    }
+
+    function addArea() {
+        const areasContainer = document.getElementById('areas-container');
+        const areaId = `area-${Date.now()}`;
+        const areaDiv = document.createElement('div');
+        areaDiv.id = areaId;
+        areaDiv.className = 'area-container';
+        areaDiv.innerHTML = `
+            <input type="text" placeholder="Area Name" class="area-name">
+            <div class="products-container"></div>
+            <div class="button-group">
+                <button type="button" class="button button-secondary" onclick="addProduct('${areaId}', null, '')">Add Product</button>
+                <button type="button" class="button button-danger" onclick="removeArea('${areaId}')">Remove Area</button>
+            </div>
+        `;
+        areasContainer.appendChild(areaDiv);
+    }
+
+    function addProduct(areaId, parentId, prefix) {
+        const parentDiv = parentId ? document.getElementById(parentId) : document.getElementById(areaId);
+        const productsContainer = parentDiv.querySelector('.products-container') || parentDiv;
+        const productId = `product-${Date.now()}`;
+        const productCount = productsContainer.children.length + 1;
+        const productNumber = prefix + productCount;
+        const productLabel = parentId ? `Sub-Product ${productNumber}` : `Product ${productNumber}`;
+        const productDiv = document.createElement('div');
+        productDiv.id = productId;
+        productDiv.className = 'product-container';
+        productDiv.innerHTML = `
+            <label class="block">Product Name</label>
+            <input type="text" placeholder="Product Name" class="product-name">
+            <label class="block">Platform</label>
+            <select class="platform-select">
+                <option value="">Select Platform</option>
+                <option value="iOS">iOS</option>
+                <option value="Android">Android</option>
+                <option value="Other">Other</option>
+            </select>
+            <input type="text" placeholder="Custom Platform" class="custom-platform hidden">
+            <label class="block">Location</label>
+            <select class="location-select">
+                <option value="">Select Location</option>
+                <option value="North America">North America</option>
+                <option value="South America">South America</option>
+                <option value="Europe">Europe</option>
+                <option value="Asia">Asia</option>
+                <option value="Africa">Africa</option>
+                <option value="Australia">Australia</option>
+                <option value="Other">Other</option>
+            </select>
+            <input type="text" placeholder="Custom Location" class="custom-location hidden">
+            <div class="sub-products-container"></div>
+            <div class="button-group">
+                <button type="button" class="button button-secondary" onclick="addProduct('${areaId}', '${productId}', '${productNumber}.')">Add Sub-Product</button>
+                <button type="button" class="button button-danger" onclick="removeProduct('${productId}')">Remove Product</button>
+            </div>
+        `;
+        productsContainer.appendChild(productDiv);
+    }
+
+    function removeArea(areaId) {
+        const areaDiv = document.getElementById(areaId);
+        areaDiv.remove();
+    }
+
+    function removeProduct(productId) {
+        const productDiv = document.getElementById(productId);
+        productDiv.remove();
+    }
+
+    // Handle platform and location change logic
+    document.addEventListener('change', function(event) {
+        if (event.target.classList.contains('platform-select')) {
+            const customPlatformInput = event.target.closest('.product-container').querySelector('.custom-platform');
+            customPlatformInput.classList.toggle('hidden', event.target.value !== 'Other');
+        }
+
+        if (event.target.classList.contains('location-select')) {
+            const customLocationInput = event.target.closest('.product-container').querySelector('.custom-location');
+            customLocationInput.classList.toggle('hidden', event.target.value !== 'Other');
+        }
+    });
+</script>
+
+</body>
+</html>
